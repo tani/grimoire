@@ -10,11 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "memfs": "^4.51.1",
+    "mock-fs": "^5.5.0",
     "proxyrequire": "^1.0.21",
     "typedoc": "^0.28.15",
     "unionfs": "^4.6.0"
   },
   "devDependencies": {
+    "@types/mock-fs": "^4.13.4",
     "mock-import": "^4.2.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"

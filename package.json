@@ -1,0 +1,22 @@
+{
+  "name": "jsdoc",
+  "version": "0.1.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node --import mock-import/register --import tsx test.ts"
+  },
+  "author": "Masaya Taniguchi <ta2gch@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "memfs": "^4.51.1",
+    "proxyrequire": "^1.0.21",
+    "typedoc": "^0.28.15",
+    "unionfs": "^4.6.0"
+  },
+  "devDependencies": {
+    "mock-import": "^4.2.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

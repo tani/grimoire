@@ -1,6 +1,5 @@
 import * as td from "typedoc";
 import mock from "mock-fs";
-import path from "node:path";
 
 export interface TypeDocConfig<A, B> {
   prehook: () => Promise<A>;
@@ -11,7 +10,7 @@ export interface TypeDocConfig<A, B> {
 export async function typedoc<A, B>(config: TypeDocConfig<A, B>): Promise<B> {
   try {
     mock({
-      "node_modules": mock.load(path.resolve(__dirname, "node_modules")),
+      'node_modules': mock.load("./node_modules")
     });
     const state = await config.prehook();
     const cliArgs = config.createCliArgs(state);
@@ -24,7 +23,7 @@ export async function typedoc<A, B>(config: TypeDocConfig<A, B>): Promise<B> {
     ]);
     const exitCode = await runTypeDocApp(app);
     if (exitCode !== ExitCodes.Ok && exitCode !== ExitCodes.Watching) {
-      throw new Error(`td failed with exit code ${exitCode}`);
+      throw new Error(`typedoc failed with exit code ${exitCode}`);
     }
     return await config.posthook(state);
   } finally {

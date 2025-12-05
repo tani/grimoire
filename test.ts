@@ -3,8 +3,13 @@ import assert from "node:assert/strict";
 import * as path from "node:path";
 import fsp from "node:fs/promises";
 import { typedoc } from "./typedoc.ts";
+import { npmdoc } from "./npmdoc.ts";
 
-test("execTypeDoc generates docs for a single entry point", async () => {
+test("npmdoc generates doc for a remote npm package", async () => {
+  const _fs = await npmdoc("markdown-it-mathjax3");
+})
+
+test("typedoc generates docs for a single entry point", async () => {
   await typedoc({
     async prehook() {
       const projectRoot = "/project";

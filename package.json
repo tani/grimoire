@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "hono": "^4.10.7",
+    "memfs": "^4.51.1",
     "mock-fs": "^5.5.0",
     "modern-tar": "^0.7.2",
     "typedoc": "^0.28.15"

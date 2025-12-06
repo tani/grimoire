@@ -6,6 +6,7 @@ import { createGunzip } from "node:zlib";
 import { unpackTar } from "modern-tar/fs";
 import { Volume } from "memfs";
 import { typedoc } from "./typedoc.ts";
+import { readFile } from "node:fs/promises";
 
 export async function npmdoc(packagename: string) {
   return await typedoc({
@@ -17,15 +18,27 @@ export async function npmdoc(packagename: string) {
       await downloadAndExtractTarball(tarballUrl, packageDir);
 
       const docsDir = "/docs";
+      const tsconfigPath = path.join(packageDir, "jsdoc.tsconfig.json");
+      await createLooseTsconfig(tsconfigPath);
+
+      const packageJson = await
+        Promise.resolve(path.join(packageDir, "package.json"))
+      .then(p => fsp.readFile(p, "utf8"))
+      .then(p => JSON.parse(p))
 
       return {
         packageDir,
+        packageJson,
         docsDir,
+        tsconfigPath,
       };
     },
     createCliArgs(s) {
       const args = [
-        `${s.packageDir}/**/*.{js,jsx,ts,tsx}`,
+        "--tsconfig",
+        s.tsconfigPath,
+        "--skipErrorChecking",
+        path.join(s.packageDir, s.packageJson.main),
         "--out",
         s.docsDir,
       ];
@@ -87,4 +100,40 @@ async function copyDirectoryToVolume(source: string, target: string, volume: Vol
       await volume.promises.writeFile(targetPath, content);
     }
   }
+}
+
+async function createLooseTsconfig(tsconfigPath: string) {
+  const config = {
+    compilerOptions: {
+      allowJs: true,
+      checkJs: false,
+      noEmit: true,
+      skipLibCheck: true,
+      module: "esnext",
+      target: "esnext",
+      moduleResolution: "bundler",
+      verbatimModuleSyntax: true,
+      allowImportingTsExtensions: true,
+      jsx: "react-jsx",
+      types: [],
+    },
+    include: [
+      "**/*.ts",
+      "**/*.cts",
+      "**/*.mts",
+      "**/*.tsx",
+      "**/*.js",
+      "**/*.cjs",
+      "**/*.mjs",
+      "**/*.jsx",
+      "**/*.d.ts"
+    ],
+    exclude: [
+      "node_modules",
+      "**/*.test.*",
+      "**/*.spec.*"
+    ],
+  };
+
+  await fsp.writeFile(tsconfigPath, JSON.stringify(config, null, 2), "utf8");
 }

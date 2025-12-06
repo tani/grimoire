@@ -21,24 +21,32 @@ export async function npmdoc(packagename: string) {
       const tsconfigPath = path.join(packageDir, "jsdoc.tsconfig.json");
       await createLooseTsconfig(tsconfigPath);
 
-      const packageJson = await
-        Promise.resolve(path.join(packageDir, "package.json"))
-      .then(p => fsp.readFile(p, "utf8"))
-      .then(p => JSON.parse(p))
-
       return {
         packageDir,
-        packageJson,
         docsDir,
         tsconfigPath,
       };
     },
     createCliArgs(s) {
+      const entryGlobs = [
+        "**/*.ts",
+        "**/*.tsx",
+        "**/*.cts",
+        "**/*.mts",
+        "**/*.js",
+        "**/*.jsx",
+        "**/*.cjs",
+        "**/*.mjs",
+      ];
+      const entryArgs = entryGlobs.map((g) => path.posix.join(s.packageDir, g));
       const args = [
         "--tsconfig",
         s.tsconfigPath,
         "--skipErrorChecking",
-        path.join(s.packageDir, s.packageJson.main),
+        "--entryPointStrategy",
+        "resolve",
+        "--entryPoints",
+        ...entryArgs,
         "--out",
         s.docsDir,
       ];
@@ -109,6 +117,7 @@ async function createLooseTsconfig(tsconfigPath: string) {
       checkJs: false,
       noEmit: true,
       skipLibCheck: true,
+      allowArbitraryExtensions: true,
       module: "esnext",
       target: "esnext",
       moduleResolution: "bundler",

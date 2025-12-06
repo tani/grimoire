@@ -4,8 +4,11 @@ import type { Context } from "hono";
 import type { Volume } from "memfs";
 import { npmdoc } from "./npmdoc.ts";
 import { serve } from "@hono/node-server";
+import { LRUCache } from "lru-cache";
 
-const docsCache = new Map<string, Promise<Volume>>();
+const docsCache = new LRUCache<string, Promise<Volume>>({
+  max: 32,
+});
 const app = new Hono();
 
 app.get("/", (c) => {
@@ -34,7 +37,7 @@ app.get("/", (c) => {
   return c.html(html);
 });
 
-app.get("/favicon.ico", (c) => c.text("", 204));
+app.get("/favicon.ico", (c) => c.body(null, 204));
 
 app.get("/:package", (c) => {
   const pkg = c.req.param("package");
@@ -49,7 +52,8 @@ const serveDocs = async (c: Context) => {
     const volume = await loadDocs(pkg);
     const requestPath = resolveRequestPath(wildcard);
     const { content, filePath } = await readFromVolume(volume, requestPath);
-    return c.newResponse(content, {
+    const body = toArrayBuffer(content);
+    return new Response(body, {
       status: 200,
       headers: { "content-type": contentType(filePath) },
     });
@@ -92,13 +96,23 @@ function resolveRequestPath(wildcard: string): string {
   return normalized;
 }
 
-async function readFromVolume(volume: Volume, requestPath: string) {
+async function readFromVolume(volume: Volume, requestPath: string): Promise<{
+  content: Buffer;
+  filePath: string;
+}> {
   const stat = await volume.promises.stat(requestPath).catch(() => undefined);
   const filePath = stat?.isDirectory()
     ? path.posix.join(requestPath, "index.html")
     : requestPath;
-  const content = await volume.promises.readFile(filePath);
+  const content = (await volume.promises.readFile(filePath)) as Buffer;
   return { content, filePath };
+}
+
+function toArrayBuffer(buf: Buffer | Uint8Array): ArrayBuffer {
+  const view = buf instanceof Uint8Array ? buf : new Uint8Array(buf);
+  const copy = new Uint8Array(view.byteLength);
+  copy.set(view);
+  return copy.buffer;
 }
 
 function contentType(filePath: string): string {

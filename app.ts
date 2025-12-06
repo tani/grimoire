@@ -2,9 +2,8 @@ import path from "node:path";
 import { Hono } from "hono";
 import type { Context } from "hono";
 import type { Volume } from "memfs";
-import { npmdoc } from "./npmdoc.ts";
-import { serve } from "@hono/node-server";
 import { LRUCache } from "lru-cache";
+import { npmdoc } from "./npmdoc.ts";
 
 const docsCache = new LRUCache<string, Promise<Volume>>({
   max: 32,
@@ -96,14 +95,15 @@ function resolveRequestPath(wildcard: string): string {
   return normalized;
 }
 
-async function readFromVolume(volume: Volume, requestPath: string): Promise<{
+async function readFromVolume(
+  volume: Volume,
+  requestPath: string,
+): Promise<{
   content: Buffer;
   filePath: string;
 }> {
   const stat = await volume.promises.stat(requestPath).catch(() => undefined);
-  const filePath = stat?.isDirectory()
-    ? path.posix.join(requestPath, "index.html")
-    : requestPath;
+  const filePath = stat?.isDirectory() ? path.posix.join(requestPath, "index.html") : requestPath;
   const content = (await volume.promises.readFile(filePath)) as Buffer;
   return { content, filePath };
 }
@@ -150,12 +150,13 @@ function extractSubpath(c: Context, pkg: string): string {
 function isNotFound(err: unknown): boolean {
   return Boolean(
     err &&
-      typeof err === "object" &&
-      "code" in err &&
-      (err as { code?: unknown }).code === "ENOENT",
+    typeof err === "object" &&
+    "code" in err &&
+    (err as { code?: unknown }).code === "ENOENT",
   );
 }
 
 if (import.meta.main) {
-  serve(app)
+  const { serve } = await import("@hono/node-server");
+  serve(app);
 }

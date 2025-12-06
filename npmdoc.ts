@@ -6,7 +6,6 @@ import { createGunzip } from "node:zlib";
 import { unpackTar } from "modern-tar/fs";
 import { Volume } from "memfs";
 import { typedoc } from "./typedoc.ts";
-import { readFile } from "node:fs/promises";
 
 export async function npmdoc(packagename: string) {
   return await typedoc({
@@ -28,10 +27,7 @@ export async function npmdoc(packagename: string) {
       };
     },
     createCliArgs(s) {
-      const entryGlobs = [
-        "**/*.{c,m,}{j,t}s",
-        "**/*.d.ts",
-      ];
+      const entryGlobs = ["**/*.{c,m,}{j,t}s", "**/*.d.ts"];
       const entryArgs = entryGlobs.map((g) => path.join(s.packageDir, g));
       const args = [
         "--tsconfig",
@@ -120,14 +116,8 @@ async function createLooseTsconfig(tsconfigPath: string) {
       jsx: "react-jsx",
       types: [],
     },
-    include: [
-      "./**/*"
-    ],
-    exclude: [
-      "./node_modules",
-      "./**/*.test.*",
-      "./**/*.spec.*"
-    ],
+    include: ["./**/*"],
+    exclude: ["./node_modules", "./**/*.test.*", "./**/*.spec.*"],
   };
 
   await fsp.writeFile(tsconfigPath, JSON.stringify(config, null, 2), "utf8");

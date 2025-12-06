@@ -10,7 +10,7 @@ export interface TypeDocConfig<A, B> {
 export async function typedoc<A, B>(config: TypeDocConfig<A, B>): Promise<B> {
   try {
     mock({
-      'node_modules': mock.load("./node_modules")
+      node_modules: mock.load("./node_modules"),
     });
     const state = await config.prehook();
     const cliArgs = config.createCliArgs(state);

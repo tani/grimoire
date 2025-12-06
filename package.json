@@ -7,6 +7,8 @@
   "scripts": {
     "test": "node --test *.test.ts",
     "start": "node app.ts",
+    "format": "oxfmt",
+    "lint": "oxlint",
     "typecheck": "tsc"
   },
   "author": "Masaya Taniguchi <ta2gch@gmail.com>",
@@ -22,6 +24,8 @@
   },
   "devDependencies": {
     "@types/mock-fs": "^4.13.4",
+    "oxfmt": "^0.16.0",
+    "oxlint": "^1.31.0",
     "typescript": "^5.9.3",
     "undici": "^7.16.0"
   }

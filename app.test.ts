@@ -6,4 +6,4 @@ test("test for markdown-it docs", async () => {
   const res = await app.request("/markdown-it/index.html");
   assert.equal(res.status, 200);
   assert.match(await res.text(), /markdown-it/);
-})
+});

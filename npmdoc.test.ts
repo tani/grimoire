@@ -4,7 +4,7 @@ import { gzipSync } from "node:zlib";
 import { packTar } from "modern-tar";
 import { MockAgent, setGlobalDispatcher } from "undici";
 import { npmdoc } from "./npmdoc.ts";
-import { Buffer } from "node:buffer"
+import { Buffer } from "node:buffer";
 
 const packageName = "demo-package";
 const tarballUrl = "https://example.invalid/demo-package-1.0.0.tgz";
@@ -19,31 +19,27 @@ test("npmdoc generates docs from a mocked npm tarball", async (t) => {
   const calls: string[] = [];
 
   const registryPool = mockAgent.get("https://registry.npmjs.org");
-  registryPool
-    .intercept({ path: `/${encodeURIComponent(packageName)}` })
-    .reply((opts) => {
-      calls.push(`https://registry.npmjs.org${opts.path}`);
-      return {
-        statusCode: 200,
-        data: JSON.stringify({
-          "dist-tags": { latest: "1.0.0" },
-          versions: { "1.0.0": { dist: { tarball: tarballUrl } } },
-        }),
-        headers: { "content-type": "application/json" },
-      };
-    });
+  registryPool.intercept({ path: `/${encodeURIComponent(packageName)}` }).reply((opts) => {
+    calls.push(`https://registry.npmjs.org${opts.path}`);
+    return {
+      statusCode: 200,
+      data: JSON.stringify({
+        "dist-tags": { latest: "1.0.0" },
+        versions: { "1.0.0": { dist: { tarball: tarballUrl } } },
+      }),
+      headers: { "content-type": "application/json" },
+    };
+  });
 
   const tarballPool = mockAgent.get("https://example.invalid");
-  tarballPool
-    .intercept({ path: "/demo-package-1.0.0.tgz" })
-    .reply((opts) => {
-      calls.push(`https://example.invalid${opts.path}`);
-      return {
-        statusCode: 200,
-        data: tarball,
-        headers: { "content-type": "application/octet-stream" },
-      };
-    });
+  tarballPool.intercept({ path: "/demo-package-1.0.0.tgz" }).reply((opts) => {
+    calls.push(`https://example.invalid${opts.path}`);
+    return {
+      statusCode: 200,
+      data: tarball,
+      headers: { "content-type": "application/octet-stream" },
+    };
+  });
 
   t.after(() => {
     mockAgent.close();

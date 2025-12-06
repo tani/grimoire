@@ -29,16 +29,10 @@ export async function npmdoc(packagename: string) {
     },
     createCliArgs(s) {
       const entryGlobs = [
-        "**/*.ts",
-        "**/*.tsx",
-        "**/*.cts",
-        "**/*.mts",
-        "**/*.js",
-        "**/*.jsx",
-        "**/*.cjs",
-        "**/*.mjs",
+        "**/*.{c,m,}{j,t}s",
+        "**/*.d.ts",
       ];
-      const entryArgs = entryGlobs.map((g) => path.posix.join(s.packageDir, g));
+      const entryArgs = entryGlobs.map((g) => path.join(s.packageDir, g));
       const args = [
         "--tsconfig",
         s.tsconfigPath,
@@ -127,20 +121,12 @@ async function createLooseTsconfig(tsconfigPath: string) {
       types: [],
     },
     include: [
-      "**/*.ts",
-      "**/*.cts",
-      "**/*.mts",
-      "**/*.tsx",
-      "**/*.js",
-      "**/*.cjs",
-      "**/*.mjs",
-      "**/*.jsx",
-      "**/*.d.ts"
+      "./**/*"
     ],
     exclude: [
-      "node_modules",
-      "**/*.test.*",
-      "**/*.spec.*"
+      "./node_modules",
+      "./**/*.test.*",
+      "./**/*.spec.*"
     ],
   };
 

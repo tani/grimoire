@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 
 test("test for markdown-it docs", async () => {
-  const res = await app.request("/markdown-it/index.html");
+  const res = await app.request("/commonmark/index.html");
   assert.equal(res.status, 200);
-  assert.match(await res.text(), /markdown-it/);
+  assert.match(await res.text(), /commonmark/);
 });

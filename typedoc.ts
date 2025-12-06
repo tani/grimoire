@@ -1,5 +1,9 @@
 import * as td from "typedoc";
 import mock from "mock-fs";
+import { createRequire } from "node:module";
+import path from "node:path";
+
+const require = createRequire(import.meta.url);
 
 export interface TypeDocConfig<A, B> {
   prehook: () => Promise<A>;
@@ -9,8 +13,9 @@ export interface TypeDocConfig<A, B> {
 
 export async function typedoc<A, B>(config: TypeDocConfig<A, B>): Promise<B> {
   try {
+    const node_modules = path.resolve(path.dirname(require.resolve("typedoc/package.json")), "..")
     mock({
-      node_modules: mock.load("./node_modules"),
+      "node_modules": mock.load(node_modules)
     });
     const state = await config.prehook();
     const cliArgs = config.createCliArgs(state);

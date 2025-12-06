@@ -1,5 +1,6 @@
 import fsp from "fs/promises";
 import path from "node:path";
+import { tmpdir } from "node:os";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { createGunzip } from "node:zlib";
@@ -10,17 +11,19 @@ import { typedoc } from "./typedoc.ts";
 export async function npmdoc(packagename: string) {
   return await typedoc({
     async prehook() {
-      const packageDir = "/package";
+      const tempRoot = await fsp.mkdtemp(path.join(tmpdir(), "npmdoc-"));
+      const packageDir = path.join(tempRoot, "package");
       await fsp.mkdir(packageDir, { recursive: true });
 
       const { tarballUrl } = await fetchPackageMetadata(packagename);
       await downloadAndExtractTarball(tarballUrl, packageDir);
 
-      const docsDir = "/docs";
+      const docsDir = path.join(tempRoot, "docs");
       const tsconfigPath = path.join(packageDir, "jsdoc.tsconfig.json");
       await createLooseTsconfig(tsconfigPath);
 
       return {
+        tempRoot,
         packageDir,
         docsDir,
         tsconfigPath,
@@ -45,6 +48,7 @@ export async function npmdoc(packagename: string) {
     async posthook(s) {
       const vol = new Volume();
       await copyDirectoryToVolume(s.docsDir, "/docs", vol);
+      await fsp.rm(s.tempRoot, { recursive: true, force: true });
       return vol;
     },
   });

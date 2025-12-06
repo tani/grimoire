@@ -13,9 +13,12 @@ export interface TypeDocConfig<A, B> {
 
 export async function typedoc<A, B>(config: TypeDocConfig<A, B>): Promise<B> {
   try {
-    const node_modules = path.resolve(path.dirname(require.resolve("typedoc/package.json")), "..")
     mock({
-      "node_modules": mock.load(node_modules)
+      "node_modules/typedoc/dist": mock.load(path.dirname(require.resolve("typedoc"))),
+      "node_modules/typedoc/static": mock.load(path.resolve(path.dirname(require.resolve("typedoc")), "../static/")),
+      "node_modules/@gerrit0/mini-shiki/dist": mock.load(path.dirname(require.resolve("@gerrit0/mini-shiki"))),
+      "node_modules/@shikijs/themes/dist": mock.load(path.dirname(require.resolve("@shikijs/themes"))),
+      "node_modules/@shikijs/langs/dist": mock.load(path.dirname(require.resolve("@shikijs/langs")))
     });
     const state = await config.prehook();
     const cliArgs = config.createCliArgs(state);

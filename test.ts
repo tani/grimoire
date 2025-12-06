@@ -1,70 +1,95 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import * as path from "node:path";
-import fsp from "node:fs/promises";
-import { typedoc } from "./typedoc.ts";
+import { gzipSync } from "node:zlib";
+import { packTar } from "modern-tar";
 import { npmdoc } from "./npmdoc.ts";
 
-test("npmdoc generates doc for a remote npm package", async () => {
-  const _fs = await npmdoc("markdown-it-mathjax3");
-})
+const packageName = "demo-package";
+const tarballUrl = "https://example.invalid/demo-package-1.0.0.tgz";
 
-test("typedoc generates docs for a single entry point", async () => {
-  await typedoc({
-    async prehook() {
-      const projectRoot = "/project";
-      const entry = path.join(projectRoot, "entry.ts");
-      const tsconfigPath = path.join(projectRoot, "tsconfig.json");
-      const out = path.join(projectRoot, "docs");
-      await fsp.mkdir(projectRoot, { recursive: true });
+test("npmdoc generates docs from a mocked npm tarball", async (t) => {
+  const tarball = gzipSync(await createTarball());
+  const metadataUrl =
+    `https://registry.npmjs.org/${encodeURIComponent(packageName)}`;
 
-      await fsp.writeFile(
-        entry,
-        [
-          "/** Adds two numbers together. */",
-          "export function add(a: number, b: number) {",
-          "  return a + b;",
-          "}",
-          "",
-        ].join("\n"),
-        "utf8",
+  const calls: string[] = [];
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (input) => {
+    const url = typeof input === "string"
+      ? input
+      : input instanceof URL
+      ? input.toString()
+      : String(input);
+
+    calls.push(url);
+
+    if (url === metadataUrl) {
+      return new Response(
+        JSON.stringify({
+          "dist-tags": { latest: "1.0.0" },
+          versions: { "1.0.0": { dist: { tarball: tarballUrl } } },
+        }),
+        { status: 200, headers: { "content-type": "application/json" } },
       );
+    }
 
-      await fsp.writeFile(
-        tsconfigPath,
-        JSON.stringify(
-          {
-            compilerOptions: {
-              target: "ESNext",
-              module: "ESNext",
-            },
-            files: ["entry.ts"],
-            include: ["entry.ts"],
-          },
-          null,
-          2,
-        ),
-        "utf8",
-      );
-      return {
-        tsconfigPath,
-        entry,
-        out
-      }
-    },
-    createCliArgs(s) {
-      return [
-        "--tsconfig",
-        s.tsconfigPath,
-        "--entryPoints",
-        s.entry,
-        "--out",
-        s.out,
-      ]
-    },
-    async posthook(s) {
-      const html = await fsp.readFile(path.join(s.out, 'index.html'), 'utf8');
-      assert.match(html, /<!DOCTYPE html>/)
-    },
+    if (url === tarballUrl) {
+      return new Response(tarball, {
+        status: 200,
+        headers: { "content-type": "application/octet-stream" },
+      });
+    }
+
+    return new Response("not found", { status: 404 });
+  };
+
+  t.after(() => {
+    globalThis.fetch = originalFetch;
   });
+
+  const vol = await npmdoc(packageName);
+  const html = await vol.promises.readFile("/docs/index.html", "utf8");
+
+  assert.match(html.toString(), /<!DOCTYPE html>/);
+  assert.match(html.toString(), new RegExp(packageName));
+  assert.equal(calls.length, 2);
 });
+
+async function createTarball(): Promise<Buffer> {
+  const files: Array<[string, string]> = [
+    ["package/package.json", JSON.stringify({ name: packageName, version: "1.0.0" })],
+    [
+      "package/typedoc.json",
+      JSON.stringify({ entryPoints: ["src/index.ts"], tsconfig: "tsconfig.json" }),
+    ],
+    [
+      "package/tsconfig.json",
+      JSON.stringify({
+        compilerOptions: {
+          target: "ESNext",
+          module: "ESNext",
+          moduleResolution: "Bundler",
+        },
+        include: ["src/index.ts"],
+      }),
+    ],
+    [
+      "package/src/index.ts",
+      [
+        "/** Greets a user. */",
+        "export function greet(name: string) {",
+        "  return `hello ${name}`;",
+        "}",
+        "",
+      ].join("\n"),
+    ],
+  ];
+
+  const entries = files.map(([name, contents]) => {
+    const body = Buffer.from(contents, "utf8");
+    return { header: { name, mode: 0o644, size: body.length }, body };
+  });
+
+  const tar = await packTar(entries);
+  return Buffer.from(tar);
+}

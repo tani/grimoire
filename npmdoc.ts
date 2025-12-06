@@ -25,15 +25,16 @@ export async function npmdoc(packagename: string) {
     },
     createCliArgs(s) {
       const args = [
+        `${s.packageDir}/**/*.{js,jsx,ts,tsx}`,
         "--out",
         s.docsDir,
       ];
       return args;
     },
     async posthook(s) {
-      const fsx = new Volume();
-      await copyDirectoryToVolume(s.docsDir, "/docs", fsx);
-      return fsx;
+      const vol = new Volume();
+      await copyDirectoryToVolume(s.docsDir, "/docs", vol);
+      return vol;
     },
   });
 }

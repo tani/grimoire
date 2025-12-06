@@ -142,4 +142,6 @@ function isNotFound(err: unknown): boolean {
   );
 }
 
-serve(app)
+if (import.meta.main) {
+  serve(app)
+}

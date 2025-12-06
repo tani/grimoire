@@ -5,7 +5,7 @@
   "description": "",
   "main": "typedoc.ts",
   "scripts": {
-    "test": "node --import tsx test.ts"
+    "test": "node --test *.test.ts"
   },
   "author": "Masaya Taniguchi <ta2gch@gmail.com>",
   "license": "ISC",

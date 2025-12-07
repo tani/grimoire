@@ -3,6 +3,7 @@ import type { Plugin, Loader } from "esbuild";
 import fs from "node:fs/promises";
 import path from "node:path";
 import MagicString from "magic-string";
+import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 
 // 2つの機能を統合したプラグイン
 export const combinedTransformPlugin: Plugin = {
@@ -92,17 +93,20 @@ await build({
     "fs/promises": "./fs/promises.ts",
     "node:fs/promises": "./fs/promises.ts",
   },
-  banner: {
-    js: [
-      "import { createRequire as __createRequire } from 'node:module';",
-      "import { fileURLToPath as __fileURLToPath } from 'node:url';",
-      "import { dirname as __path_dirname } from 'node:path';",
-      "const __filename = __fileURLToPath(import.meta.url);",
-      "const __dirname = __path_dirname(__filename);",
-      "const require = __createRequire(import.meta.url);",
-    ].join("\n"),
-  },
+  // banner: {
+  //   js: [
+  //     "import { createRequire as __createRequire } from 'node:module';",
+  //     "import { fileURLToPath as __fileURLToPath } from 'node:url';",
+  //     "import { dirname as __path_dirname } from 'node:path';",
+  //     "const __filename = __fileURLToPath(import.meta.url);",
+  //     "const __dirname = __path_dirname(__filename);",
+  //     "const require = __createRequire(import.meta.url);",
+  //   ].join("\n"),
+  // },
   plugins: [
+    nodeModulesPolyfillPlugin({
+      modules: { fs: false, "fs/promises": false },
+    }),
     combinedTransformPlugin, // 統合したプラグイン1つだけを指定
   ],
 });

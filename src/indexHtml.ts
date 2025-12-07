@@ -590,7 +590,7 @@ export default `
                     <i class="bi bi-heart-fill"></i> Sponsor
                 </a>
                 <a href="#">About</a>
-                <a href="#">GitHub</a>
+                <a href="https://github.com/tani/grimoire">GitHub</a>
             </div>
         </div>
     </footer>

@@ -10,7 +10,7 @@
     "build": "node build.ts",
     "test": "node --test *.test.ts",
     "prestart": "npm run build",
-    "start": "node app.ts",
+    "start": "node dist/app.mjs",
     "format": "oxfmt",
     "lint": "oxlint",
     "typecheck": "tsc"

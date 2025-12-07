@@ -573,9 +573,9 @@ export default `
                 <p>Select a spell to cast</p>
                 <div class="tags">
                     <button onclick="window.location.href='/react'">react</button>
-                    <button onclick="window.location.href='/vue'">vue</button>
-                    <button onclick="window.location.href='/three'">three</button>
-                    <button onclick="window.location.href='/zod'">zod</button>
+                    <button onclick="window.location.href='/markdown-it'">markdown-it</button>
+                    <button onclick="window.location.href='/remark'">remark</button>
+                    <button onclick="window.location.href='/commonmark'">commonmark</button>
                 </div>
             </div>
         </section>

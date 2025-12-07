@@ -142,3 +142,4 @@ vite.config.ts.timestamp-*
 
 # snapshot
 snapshot/node_modules.json
+.vercel

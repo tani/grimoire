@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "description": "",
-  "main": "node dist/app.mjs",
+  "main": "dist/node/server.js",
   "scripts": {
     "snapshot": "node src/snapshot/dump.ts",
     "build": "node build.ts",

@@ -94,5 +94,12 @@ const defaultConfig = {
 await build({
   ...(defaultConfig as any),
   entryPoints: ["server/main.ts"],
-  outfile: "dist/server.js",
+  outfile: "dist/node/server.js",
+});
+
+await build({
+  ...(defaultConfig as any),
+  entryPoints: ["src/app.ts"],
+  external: ["hono"],
+  outfile: "dist/vercel/app.js",
 });

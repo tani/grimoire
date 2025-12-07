@@ -4,9 +4,9 @@ import { npmdoc } from "./npmdoc.ts";
 
 test("marked", async () => {
   const docs = await npmdoc("marked");
-  const html = await docs.promises.readFile("/docs/index.html", "utf8") as string;
+  const html = (await docs.promises.readFile("/docs/index.html", "utf8")) as string;
   assert.match(html!, /<!DOCTYPE html>/);
-})
+});
 
 test("eslint -> markdown-it", async () => {
   await assert.rejects(() => npmdoc("eslint"));

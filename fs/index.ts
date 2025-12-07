@@ -1,38 +1,91 @@
-import { Volume, createFsFromVolume } from 'memfs';
-import type { IFs } from 'memfs';
-import * as snapshot from "../snapshot.ts";
+import { Volume, createFsFromVolume } from "memfs";
+import type { IFs } from "memfs";
+import * as snapshot from "../snapshot/load.ts";
 
 const vol = new Volume();
-const fs: IFs = createFsFromVolume(vol);
-await snapshot.load(fs);
-
-export const promises = fs.promises;
+const memfs: IFs = createFsFromVolume(vol);
+snapshot.load(memfs);
 
 export const {
   readFile,
   readFileSync,
   writeFile,
   writeFileSync,
+  appendFile,
+  appendFileSync,
   mkdir,
   mkdirSync,
   rmdir,
   rmdirSync,
-  stat,
-  statSync,
-  exists,
-  existsSync,
+  mkdtemp,
+  mkdtempSync,
   readdir,
   readdirSync,
   unlink,
   unlinkSync,
   rename,
   renameSync,
-  constants,
+  stat,
+  statSync,
+  lstat,
+  lstatSync,
+  fstat,
+  fstatSync,
+  exists,
+  existsSync,
+  access,
+  accessSync,
+  link,
+  linkSync,
+  symlink,
+  symlinkSync,
+  readlink,
+  readlinkSync,
+  realpath,
+  realpathSync,
+  open,
+  openSync,
+  close,
+  closeSync,
+  read,
+  readSync,
+  write,
+  writev,
+  writeSync,
+  ftruncate,
+  ftruncateSync,
+  truncate,
+  truncateSync,
+  fsync,
+  fsyncSync,
+  fdatasync,
+  fdatasyncSync,
+  chmod,
+  chmodSync,
+  fchmod,
+  fchmodSync,
+  lchmod,
+  lchmodSync,
+  chown,
+  chownSync,
+  fchown,
+  fchownSync,
+  lchown,
+  lchownSync,
+  utimes,
+  utimesSync,
+  futimes,
+  futimesSync,
+  copyFile,
+  copyFileSync,
   createReadStream,
   createWriteStream,
   watch,
   watchFile,
   unwatchFile,
-} = fs;
+  constants,
+  promises, // fs.promises API
+} = memfs;
 
-export default fs;
+// デフォルトエクスポートもそのまま維持
+export default memfs;

@@ -4,6 +4,7 @@ import type { Context } from "hono";
 import type { Volume } from "memfs";
 import { LRUCache } from "lru-cache";
 import { npmdoc } from "./npmdoc.ts";
+import { serve } from "@hono/node-server";
 
 const docsCache = new LRUCache<string, Promise<Volume>>({
   max: 32,
@@ -58,6 +59,7 @@ const serveDocs = async (c: Context) => {
     });
   } catch (err) {
     if (isNotFound(err)) {
+      console.warn(err);
       return c.text("Not found", 404);
     }
     console.error(err);
@@ -156,7 +158,4 @@ function isNotFound(err: unknown): boolean {
   );
 }
 
-if (import.meta.main) {
-  const { serve } = await import("@hono/node-server");
-  serve(app);
-}
+serve(app);

@@ -11,7 +11,7 @@ import { typedoc } from "./typedoc.ts";
 export async function npmdoc(packagename: string) {
   return await typedoc({
     async prehook() {
-      const tempRoot = await fsp.mkdtemp(path.join(tmpdir(), "npmdoc-"));
+      const tempRoot = await fsp.mkdtemp("npmdoc-");
       const packageDir = path.join(tempRoot, "package");
       await fsp.mkdir(packageDir, { recursive: true });
 

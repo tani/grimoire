@@ -15,7 +15,7 @@
     "typecheck": "tsc"
   },
   "author": "Masaya Taniguchi <ta2gch@gmail.com>",
-  "license": "ISC",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "@hono/node-server": "^1.19.6",
     "hono": "^4.10.7",

@@ -1,7 +1,7 @@
 import fsp from "fs/promises";
 import path from "node:path";
-import { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
+import { Readable, pipeline } from "node:stream";
+import { promisify } from "node:util";
 import { createGunzip } from "node:zlib";
 import { unpackTar } from "modern-tar/fs";
 import { Volume } from "memfs";
@@ -77,7 +77,7 @@ async function downloadAndExtractTarball(tarballUrl: string, destination: string
     throw new Error(`Failed to download tarball: ${res.status} ${res.statusText}`);
   }
 
-  await pipeline(
+  await promisify(pipeline)(
     Readable.fromWeb(res.body as any),
     createGunzip(),
     unpackTar(destination, { strip: 1 }),

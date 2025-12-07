@@ -1,6 +1,6 @@
 import { Volume, createFsFromVolume } from "memfs";
 import type { IFs } from "memfs";
-import * as snapshot from "../snapshot/load.ts";
+import * as snapshot from "../../snapshot/load.ts";
 
 const vol = new Volume();
 const memfs: IFs = createFsFromVolume(vol);

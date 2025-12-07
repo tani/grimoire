@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.1.0",
   "description": "",
-  "main": "typedoc.ts",
+  "main": "node dist/app.mjs",
   "scripts": {
     "snapshot": "node snapshot/dump.ts",
     "prebuild": "npm run snapshot",
@@ -21,19 +21,17 @@
     "@hono/node-server": "^1.19.6",
     "hono": "^4.10.7",
     "lru-cache": "^11.2.4",
-    "magic-string": "^0.30.21",
     "memfs": "^4.51.1",
     "mock-fs": "^5.5.0",
     "modern-tar": "^0.7.2",
     "typedoc": "^0.28.15"
   },
   "devDependencies": {
+    "@jspm/core": "^2.1.0",
     "@types/mock-fs": "^4.13.4",
     "esbuild": "^0.25.12",
-    "esbuild-plugins-node-modules-polyfill": "^1.7.1",
     "oxfmt": "^0.16.0",
     "oxlint": "^1.31.0",
-    "typescript": "^5.9.3",
-    "undici": "^7.16.0"
+    "typescript": "^5.9.3"
   }
 }

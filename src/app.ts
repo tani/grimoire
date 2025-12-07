@@ -4,7 +4,6 @@ import type { Context } from "hono";
 import type { Volume } from "memfs";
 import { LRUCache } from "lru-cache";
 import { npmdoc } from "./npmdoc.ts";
-// import { serve } from "@hono/node-server";
 
 const docsCache = new LRUCache<string, Promise<Volume>>({
   max: 32,
@@ -157,5 +156,3 @@ function isNotFound(err: unknown): boolean {
     (err as { code?: unknown }).code === "ENOENT",
   );
 }
-
-// serve(app);

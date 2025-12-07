@@ -3,6 +3,7 @@ import type { Plugin } from "esbuild";
 import fs from "node:fs/promises";
 import path from "node:path";
 
+const platform = "node";
 
 export const combinedTransformPlugin: Plugin = {
   name: "combined-transform",
@@ -25,7 +26,7 @@ export const combinedTransformPlugin: Plugin = {
         let relativePath = path.relative(process.cwd(), args.path);
         relativePath = relativePath.split(path.sep).join("/");
         if (!relativePath.startsWith(".")) {
-          relativePath = "file://localhost/" + relativePath;
+          relativePath = "file:///" + relativePath;
         }
         const regex = /\bimport\.meta\.url\b/g;
         const replaced = contents.replace(regex, JSON.stringify(relativePath));
@@ -46,6 +47,7 @@ export const combinedTransformPlugin: Plugin = {
 };
 
 const builtins = [
+  "crypto",
   "os",
   "child_process",
   "stream",
@@ -56,36 +58,41 @@ const builtins = [
   "module",
   "buffer",
   "assert",
-  // "inspector",
-  "events"
-]
+  "events",
+  "http",
+  "http2",
+];
 
-Object.fromEntries(builtins.map(m => [m, `@jspm/core/nodelibs/${m}`]))
+const shims = platform === "node" ? [] : builtins;
 
-await build({
-  entryPoints: ["src/app.ts"],
-  outfile: "dist/app.mjs",
+const defaultConfig = {
   bundle: true,
   format: "esm",
-  platform: "browser",
   target: "es2022",
+  platform,
   alias: {
     fs: "./src/node/fs/index.ts",
     "node:fs": "./src/node/fs/index.ts",
     "fs/promises": "./src/node/fs/promises.ts",
     "node:fs/promises": "./src/node/fs/promises.ts",
-    "inspector": "./src/node/inspector.ts",
+    inspector: "./src/node/inspector.ts",
     "node:inspector": "./src/node/inspector.ts",
-    ...Object.fromEntries(builtins.map(m => [m, `@jspm/core/nodelibs/${m}`])),
-    ...Object.fromEntries(builtins.map(m => [`node:${m}`, `@jspm/core/nodelibs/${m}`]))
+    ...Object.fromEntries(builtins.map((m) => [m, `node:${m}`])),
+    ...Object.fromEntries(shims.map((m) => [`node:${m}`, `@jspm/core/nodelibs/${m}`])),
   },
   banner: {
-    js: `
-      const __filename = import.meta.filename;
-      const __dirname = import.meta.dirname;
-    `
+    js: [
+      'import { createRequire as __createRequire } from "node:module";',
+      "const require = __createRequire(import.meta.url);",
+      "const __filename = import.meta.filename;",
+      "const __dirname = import.meta.dirname;",
+    ].join("\n"),
   },
-  plugins: [
-    combinedTransformPlugin,
-  ],
+  plugins: [combinedTransformPlugin],
+} as const;
+
+await build({
+  ...(defaultConfig as any),
+  entryPoints: ["server/main.ts"],
+  outfile: "dist/server.js",
 });

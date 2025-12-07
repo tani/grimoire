@@ -1,6 +1,5 @@
 import fsp from "fs/promises";
 import path from "node:path";
-import { tmpdir } from "node:os";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { createGunzip } from "node:zlib";

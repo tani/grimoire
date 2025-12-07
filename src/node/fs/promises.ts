@@ -1,0 +1,35 @@
+import fs from "./index.ts";
+
+export default fs.promises;
+
+export const {
+  readFile,
+  writeFile,
+  appendFile,
+  truncate,
+  copyFile,
+  cp,
+  mkdir,
+  readdir,
+  rmdir,
+  rm,
+  mkdtemp,
+  opendir,
+  link,
+  unlink,
+  symlink,
+  readlink,
+  realpath,
+  stat,
+  lstat,
+  chmod,
+  lchmod,
+  chown,
+  lchown,
+  utimes,
+  lutimes,
+  access,
+  open,
+  watch,
+  constants,
+} = fs.promises;

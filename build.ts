@@ -63,19 +63,19 @@ const builtins = [
 Object.fromEntries(builtins.map(m => [m, `@jspm/core/nodelibs/${m}`]))
 
 await build({
-  entryPoints: ["app.ts"],
+  entryPoints: ["src/app.ts"],
   outfile: "dist/app.mjs",
   bundle: true,
   format: "esm",
   platform: "browser",
   target: "es2022",
   alias: {
-    fs: "./node/fs/index.ts",
-    "node:fs": "./node/fs/index.ts",
-    "fs/promises": "./node/fs/promises.ts",
-    "node:fs/promises": "./node/fs/promises.ts",
-    "inspector": "./node/inspector.ts",
-    "node:inspector": "./node/inspector.ts",
+    fs: "./src/node/fs/index.ts",
+    "node:fs": "./src/node/fs/index.ts",
+    "fs/promises": "./src/node/fs/promises.ts",
+    "node:fs/promises": "./src/node/fs/promises.ts",
+    "inspector": "./src/node/inspector.ts",
+    "node:inspector": "./src/node/inspector.ts",
     ...Object.fromEntries(builtins.map(m => [m, `@jspm/core/nodelibs/${m}`])),
     ...Object.fromEntries(builtins.map(m => [`node:${m}`, `@jspm/core/nodelibs/${m}`]))
   },

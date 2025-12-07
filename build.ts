@@ -17,7 +17,7 @@ export const combinedTransformPlugin: Plugin = {
           .replace(/const\s+require\s*=\s*createRequire\(.*?\);/g, "/* replaced */")
           .replace(/const\s+req\s*=\s*createRequire\(.*?\);/g, "/* replaced */")
           .replace(/return req\(/g, "return require(")
-          .replace(/req\.resolve/g, "require.resolve");
+          .replace(/req\.resolve\("typescript"\)/g, '"/node_modules/typescript/lib/typescript.js"');
         changed ||= replaced !== contents;
         contents = replaced;
       }

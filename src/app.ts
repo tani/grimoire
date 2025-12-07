@@ -10,6 +10,19 @@ const docsCache = new LRUCache<string, Promise<Volume>>({
   max: 32,
 });
 const app = new Hono();
+const faviconSvg =
+  `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">` +
+  `<defs><linearGradient id="g" x1="10" y1="8" x2="54" y2="54" gradientUnits="userSpaceOnUse">` +
+  `<stop stop-color="#059669"/><stop offset="1" stop-color="#14b8a6"/></linearGradient></defs>` +
+  `<rect width="64" height="64" rx="14" fill="#0f172a"/>` +
+  `<rect x="6" y="6" width="52" height="52" rx="12" fill="url(#g)" opacity="0.15" stroke="#14b8a6" stroke-opacity="0.35" stroke-width="2"/>` +
+  `<path d="M23 19h14c4.418 0 8 3.582 8 8 0 4.418-3.582 8-8 8H27v10" stroke="#34d399" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>` +
+  `<circle cx="24" cy="45" r="3" fill="#34d399"/>` +
+  `</svg>`;
+const faviconHeaders = {
+  "content-type": "image/svg+xml",
+  "cache-control": "public, max-age=604800, immutable",
+};
 
 const ensureGrimoireHomeLink: MiddlewareHandler = async (c, next) => {
   await next();
@@ -35,7 +48,8 @@ app.get("/", (c) => {
   return c.html(html);
 });
 
-app.get("/favicon.ico", (c) => c.body(null, 204));
+app.get("/favicon.svg", (c) => c.body(faviconSvg, 200, faviconHeaders));
+app.get("/favicon.ico", (c) => c.body(faviconSvg, 200, faviconHeaders));
 
 app.get("/:package", (c) => {
   const pkg = c.req.param("package");

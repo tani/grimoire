@@ -4,7 +4,61 @@ export default `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Grimoire instantly generates TypeDoc-powered API docs for any published npm package. Enter a package name and get browsable, cached documentation in seconds.">
+    <meta name="keywords" content="Grimoire, TypeDoc, npm documentation, API docs, TypeScript, JavaScript, TSDoc">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#0f172a">
     <title>Grimoire - Summon Documentation</title>
+    <link rel="canonical" href="/" id="canonical-link">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Grimoire">
+    <meta property="og:title" content="Grimoire - Summon Documentation">
+    <meta property="og:description" content="Summon TypeDoc-based API docs for any npm package with cached, on-demand builds.">
+    <meta property="og:url" content="/" id="og-url">
+    <meta property="og:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjYzMCIgdmlld0JveD0iMCAwIDEyMDAgNjMwIiBmaWxsPSJub25lIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iIzA1OTY2OSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE0YjhhNiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIGZpbGw9IiMwZjE3MmEiLz48cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIxMTQwIiBoZWlnaHQ9IjU3MCIgcng9IjI4IiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMxNGI4YTYiIHN0cm9rZS1vcGFjaXR5PSIwLjM1IiBzdHJva2Utd2lkdGg9IjQiLz4KPHRleHQgeD0iODAiIHk9IjMyMCIgZmlsbD0iI2VjZmVmZiIgZm9udC1mYW1pbHk9IkludGVyLCBzeXN0ZW0tdWkiIGZvbnQtc2l6ZT0iOTYiIGZvbnQtd2VpZ2h0PSI3MDAiPkdyaW1vaXJlPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMzkwIiBmaWxsPSIjYTdmM2QwIiBmb250LWZhbWlseT0iSW50ZXIsIHN5c3RlbS11aSIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9IjUwMCI+U3VtbW9uIEFQSSBkb2NzIGZvciBhbnkgbnBtIHBhY2thZ2U8L3RleHQ+CjxjaXJjbGUgY3g9IjEwNDAiIGN5PSIxNzAiIHI9IjkwIiBmaWxsPSIjZWNmZGYzIiBmaWxsLW9wYWNpdHk9IjAuMDgiIHN0cm9rZT0iIzM0ZDM5OSIgc3Rya2Utd2lkdGg9IjYiLz4KPHBhdGggZD0iTTEwMDUgMTcwbDQwIDQyIDgwLTk2IiBzdHJva2U9IiMzNGQzOTkiIHN0cm9rZS13aWR0aD0iMTIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPgo8L3N2Zz4=">
+    <meta property="og:image:alt" content="Grimoire brand illustration">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Grimoire - Summon Documentation">
+    <meta name="twitter:description" content="Summon TypeDoc-based API docs for any npm package with cached, on-demand builds.">
+    <meta name="twitter:image" content="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjAwIiBoZWlnaHQ9IjYzMCIgdmlld0JveD0iMCAwIDEyMDAgNjMwIiBmaWxsPSJub25lIj4KPGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+PHN0b3Agc3RvcC1jb2xvcj0iIzA1OTY2OSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzE0YjhhNiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPgo8cmVjdCB3aWR0aD0iMTIwMCIgaGVpZ2h0PSI2MzAiIGZpbGw9IiMwZjE3MmEiLz48cmVjdCB4PSIzMCIgeT0iMzAiIHdpZHRoPSIxMTQwIiBoZWlnaHQ9IjU3MCIgcng9IjI4IiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjE1IiBzdHJva2U9IiMxNGI4YTYiIHN0cm9rZS1vcGFjaXR5PSIwLjM1IiBzdHJva2Utd2lkdGg9IjQiLz4KPHRleHQgeD0iODAiIHk9IjMyMCIgZmlsbD0iI2VjZmVmZiIgZm9udC1mYW1pbHk9IkludGVyLCBzeXN0ZW0tdWkiIGZvbnQtc2l6ZT0iOTYiIGZvbnQtd2VpZ2h0PSI3MDAiPkdyaW1vaXJlPC90ZXh0Pgo8dGV4dCB4PSI4MCIgeT0iMzkwIiBmaWxsPSIjYTdmM2QwIiBmb250LWZhbWlseT0iSW50ZXIsIHN5c3RlbS11aSIgZm9udC1zaXplPSIzNiIgZm9udC13ZWlnaHQ9IjUwMCI+U3VtbW9uIEFQSSBkb2NzIGZvciBhbnkgbnBtIHBhY2thZ2U8L3RleHQ+CjxjaXJjbGUgY3g9IjEwNDAiIGN5PSIxNzAiIHI9IjkwIiBmaWxsPSIjZWNmZGYzIiBmaWxsLW9wYWNpdHk9IjAuMDgiIHN0cm9rZT0iIzM0ZDM5OSIgc3Rya2Utd2lkdGg9IjYiLz4KPHBhdGggZD0iTTEwMDUgMTcwbDQwIDQyIDgwLTk2IiBzdHJva2U9IiMzNGQzOTkiIHN0cm9rZS13aWR0aD0iMTIiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Rya2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPg==">
+
+    <script type="application/ld+json" id="structured-data">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Grimoire",
+      "description": "On-demand API documentation server that turns any npm package into browsable TypeDoc output.",
+      "url": ""
+    }
+    </script>
+    <script>
+        (() => {
+            const origin = window.location.origin;
+            const canonical = origin + "/";
+
+            const canonicalEl = document.getElementById("canonical-link");
+            if (canonicalEl) canonicalEl.setAttribute("href", canonical);
+
+            const ogUrl = document.getElementById("og-url");
+            if (ogUrl) ogUrl.setAttribute("content", canonical);
+
+            const ld = document.getElementById("structured-data");
+            if (ld?.textContent) {
+                try {
+                    const data = JSON.parse(ld.textContent);
+                    data.url = canonical;
+                    ld.textContent = JSON.stringify(data);
+                } catch {
+                    // ignore parse errors
+                }
+            }
+        })();
+    </script>
 
     <!-- Bootstrap Icons via JSDelivr -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">

@@ -9,7 +9,7 @@
     "build": "node build.ts",
     "test": "node --test *.test.ts",
     "prestart": "npm run build",
-    "start": "node dist/server.js",
+    "start": "node dist/node/server.js",
     "format": "oxfmt",
     "lint": "oxlint",
     "typecheck": "tsc"

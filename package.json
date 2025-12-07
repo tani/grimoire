@@ -6,7 +6,6 @@
   "main": "node dist/app.mjs",
   "scripts": {
     "snapshot": "node src/snapshot/dump.ts",
-    "prebuild": "npm run snapshot",
     "build": "node build.ts",
     "test": "node --test *.test.ts",
     "prestart": "npm run build",

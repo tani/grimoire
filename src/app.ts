@@ -1,6 +1,6 @@
 import path from "node:path";
 import { Hono } from "hono";
-import type { Context } from "hono";
+import type { Context, MiddlewareHandler } from "hono";
 import type { Volume } from "memfs";
 import { LRUCache } from "lru-cache";
 import { npmdoc } from "./npmdoc.ts";
@@ -10,6 +10,25 @@ const docsCache = new LRUCache<string, Promise<Volume>>({
   max: 32,
 });
 const app = new Hono();
+
+const ensureGrimoireHomeLink: MiddlewareHandler = async (c, next) => {
+  await next();
+
+  const res = c.res;
+  const contentType = res?.headers.get("content-type") ?? "";
+  if (!contentType.toLowerCase().startsWith("text/html")) {
+    return;
+  }
+
+  const html = await res.text();
+  const rewritten = addGrimoireHomeLink(html);
+  const headers = new Headers(res.headers);
+  headers.set("content-length", Buffer.byteLength(rewritten, "utf8").toString());
+  c.res = new Response(rewritten, {
+    status: res.status,
+    headers,
+  });
+};
 
 app.get("/", (c) => {
   const html = indexHtml;
@@ -46,6 +65,8 @@ const serveDocs = async (c: Context) => {
   }
 };
 
+app.use("/:package/", ensureGrimoireHomeLink);
+app.use("/:package/*", ensureGrimoireHomeLink);
 app.get("/:package/", serveDocs);
 app.get("/:package/*", serveDocs);
 
@@ -135,4 +156,15 @@ function isNotFound(err: unknown): boolean {
     "code" in err &&
     (err as { code?: unknown }).code === "ENOENT",
   );
+}
+
+function addGrimoireHomeLink(html: string): string {
+  const anchorRegex = /(<a\b[^>]*\bclass="[^"]*\btitle\b[^"]*"[^>]*>[\s\S]*?<\/a>)/i;
+  if (html.includes('<a class="title" href="/">Grimoire</a>')) {
+    return html;
+  }
+  return html.replace(anchorRegex, (match) => {
+    const homeLink = '<a class="title" href="/">Grimoire</a>';
+    return `${homeLink}${match}`;
+  });
 }

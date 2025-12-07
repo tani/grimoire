@@ -4,6 +4,7 @@ import type { Context } from "hono";
 import type { Volume } from "memfs";
 import { LRUCache } from "lru-cache";
 import { npmdoc } from "./npmdoc.ts";
+import indexHtml from "./indexHtml.ts";
 
 const docsCache = new LRUCache<string, Promise<Volume>>({
   max: 32,
@@ -11,28 +12,7 @@ const docsCache = new LRUCache<string, Promise<Volume>>({
 const app = new Hono();
 
 app.get("/", (c) => {
-  const html = `
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Grimoire</title>
-    <style>
-      body { font-family: system-ui, -apple-system, sans-serif; margin: 2rem; }
-      form { display: flex; gap: .5rem; flex-wrap: wrap; }
-      input[type="text"] { flex: 1 0 12rem; padding: .5rem; font-size: 1rem; }
-      button { padding: .5rem 1rem; font-size: 1rem; cursor: pointer; }
-    </style>
-  </head>
-  <body>
-    <h1>Generate npm docs</h1>
-    <form action="/" method="get" onsubmit="event.preventDefault(); window.location.href='/' + encodeURIComponent(document.querySelector('input[name=package]').value) + '/';">
-      <input type="text" name="package" placeholder="package-name" required />
-      <button type="submit">Open docs</button>
-    </form>
-  </body>
-</html>`;
+  const html = indexHtml;
   return c.html(html);
 });
 

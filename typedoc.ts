@@ -16,6 +16,8 @@ export async function typedoc<A, B>(config: TypeDocConfig<A, B>): Promise<B> {
     new td.TSConfigReader(),
     new td.ArgumentsReader(300, cliArgs).ignoreErrors(),
   ]);
+  app.options.setValue("disableGit", true);
+  app.options.setValue("sourceLinkTemplate", true);
   const exitCode = await runTypeDocApp(app);
   if (exitCode !== ExitCodes.Ok) {
     throw new Error(`typedoc failed with exit code ${exitCode}`);
